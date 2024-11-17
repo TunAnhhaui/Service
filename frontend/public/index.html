@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+
+    <!-- <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/0.1.0-beta.5/libs/oversea/index.js"></script>
+    <script>
+        new CozeWebSDK.WebChatClient({
+          config: {
+            bot_id: '7417133357647347713',
+          },
+          componentProps: {
+            title: 'Nhà Đẹp',
+          },
+        });
+    </script> -->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=66efb0f9c1d98d299425d407" async="async"></script>
+    <script>
+      window.onload = function() {
+        // Hàm kiểm tra phần tử ngay lập tức sau khi trang đã tải
+        function checkElementImmediately() {
+          const element = document.getElementById('header_drag');
+          if (element) {
+            console.log('Phần tử đã có sẵn trong DOM:', element);
+          } else {
+            console.log('Phần tử chưa tồn tại, bắt đầu theo dõi...');
+            startObserving();  // Nếu phần tử chưa có, bắt đầu theo dõi
+          }
+        }
+    
+        // Sử dụng MutationObserver để theo dõi khi phần tử được thêm vào DOM
+        function startObserving() {
+          const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              mutation.addedNodes.forEach(function(node) {
+                if (node.id === 'header_drag') {
+                  console.log('Phần tử đã được thêm vào DOM:', node);
+                  observer.disconnect();  // Ngừng quan sát sau khi tìm thấy phần tử
+                }
+              });
+            });
+          });
+    
+          // Bắt đầu quan sát sự thay đổi của toàn bộ body
+          observer.observe(document.body, { childList: true, subtree: true });
+        }
+    
+        // Kiểm tra ngay sau khi trang đã tải
+        checkElementImmediately();
+      };
+    </script>
+    </body>
+</html>
