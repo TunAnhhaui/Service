@@ -14,7 +14,7 @@ namespace api.Controllers
         private readonly AppDbContext _context;
         public ProductController(AppDbContext context)
         {
-            _context=context;
+            _context = context;
         }
 
         [HttpPost("create")]
@@ -24,7 +24,7 @@ namespace api.Controllers
             {
                 return BadRequest("Tên sản phẩm không được để trống");
             }
-            if (productDto.CategoryId==null || productDto.CategoryId<=0)
+            if (productDto.CategoryId == null || productDto.CategoryId <= 0)
             {
                 return BadRequest("Vui lòng chọn thể loại sản phẩm");
             }
@@ -53,15 +53,15 @@ namespace api.Controllers
             }
             else
             {
-                newProduct.Discounted = null; 
-                newProduct.DiscountedPrice = null; 
+                newProduct.Discounted = null;
+                newProduct.DiscountedPrice = null;
             }
             _context.products.Add(newProduct);
             await _context.SaveChangesAsync();
             return Ok("Thêm mới thành công");
         }
         [HttpPatch("update/{id}")]
-        public async Task<IActionResult> update([FromBody] ProductDto productDto,int id)
+        public async Task<IActionResult> update([FromBody] ProductDto productDto, int id)
         {
             var product = await _context.products.FindAsync(id);
             if (product == null)
@@ -69,10 +69,10 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            product.Name= productDto.Name;
-            product.Description= productDto.Description;
-            product.Price= productDto.Price;
-            product.Image= productDto.Image;
+            product.Name = productDto.Name;
+            product.Description = productDto.Description;
+            product.Price = productDto.Price;
+            product.Image = productDto.Image;
             product.Discounted = productDto.Discounted;
             product.CategoryId = productDto.CategoryId;
             product.CreatedDate = DateTime.Now;
@@ -81,7 +81,7 @@ namespace api.Controllers
             return Ok();
         }
         [HttpGet("getByPage")]
-        public async Task<IActionResult> getByPage(int page=1,int limit=4, string? sort = null, int? maxPrice = null, int? minPrice = null, string? size = null, string? color = null)
+        public async Task<IActionResult> getByPage(int page = 1, int limit = 4, string? sort = null, int? maxPrice = null, int? minPrice = null, string? size = null, string? color = null)
         {
             var query = _context.products.AsQueryable();
             if (minPrice.HasValue)
@@ -151,8 +151,8 @@ namespace api.Controllers
         public async Task<IActionResult> getAll()
         {
             var products = await _context.products
-                .Include(p=>p.ProductImages)
-                .Include(p=>p.Comments)
+                .Include(p => p.ProductImages)
+                .Include(p => p.Comments)
                 .ToListAsync();
             var result = products.Select(product => new
             {
@@ -174,9 +174,9 @@ namespace api.Controllers
         public async Task<IActionResult> getNew()
         {
             var products = await _context.products
-                .Include(p=>p.Comments)
+                .Include(p => p.Comments)
                 .OrderByDescending(p => p.CreatedDate)
-                .Take(4) 
+                .Take(4)
                 .ToListAsync();
             var result = products.Select(product => new
             {
@@ -200,7 +200,7 @@ namespace api.Controllers
         public async Task<IActionResult> getDiscount()
         {
             var products = await _context.products
-                .Include(c=>c.Comments)
+                .Include(c => c.Comments)
                 .Where(p => p.Discounted.HasValue && p.Discounted > 0)
                 .OrderBy(p => Guid.NewGuid())
                 .Take(8)
@@ -253,25 +253,25 @@ namespace api.Controllers
         [HttpGet("getOne/{id}")]
         public async Task<IActionResult> getOne(int id)
         {
-            var product=await _context.products
-                .Include(p=>p.Category)
-                .Include(c=>c.ProductImages)
-                .Include(c=>c.ProductSizes)
+            var product = await _context.products
+                .Include(p => p.Category)
+                .Include(c => c.ProductImages)
+                .Include(c => c.ProductSizes)
                 .ThenInclude(pc => pc.Size)
-                .Include(c=>c.ProductColors)
+                .Include(c => c.ProductColors)
                 .ThenInclude(pc => pc.Color)
-                .Include(pc=>pc.Comments)
-                .ThenInclude(pc=>pc.User)
-                .FirstOrDefaultAsync(x=>x.ProductId==id);
+                .Include(pc => pc.Comments)
+                .ThenInclude(pc => pc.User)
+                .FirstOrDefaultAsync(x => x.ProductId == id);
             return Ok(product);
         }
         [HttpGet("getByCategory/{categoryId}")]
-        public async Task<IActionResult> getByCategory(int categoryId,int page=1,int limit=4, string? sort = null, int? maxPrice = null, int? minPrice = null, string? size = null, string? color = null)
+        public async Task<IActionResult> getByCategory(int categoryId, int page = 1, int limit = 4, string? sort = null, int? maxPrice = null, int? minPrice = null, string? size = null, string? color = null)
         {
             var query = _context.products.AsQueryable().Where(p => p.CategoryId == categoryId);
-            if(minPrice.HasValue)
+            if (minPrice.HasValue)
             {
-                query=query.Where(p=>p.Price>=minPrice.Value);
+                query = query.Where(p => p.Price >= minPrice.Value);
             }
             if (maxPrice.HasValue)
             {
@@ -283,7 +283,7 @@ namespace api.Controllers
             }
             if (!string.IsNullOrEmpty(color))
             {
-                query = query.Where(p => p.ProductColors.Any(pc=>pc.Color.Name == color)); 
+                query = query.Where(p => p.ProductColors.Any(pc => pc.Color.Name == color));
             }
             if (!string.IsNullOrEmpty(sort))
             {
@@ -305,7 +305,7 @@ namespace api.Controllers
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / limit);
             var products = await query
-                .Include(c=>c.Comments)
+                .Include(c => c.Comments)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToListAsync();
@@ -338,7 +338,7 @@ namespace api.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> search(string? q,int page=1,int limit=8)
+        public async Task<IActionResult> search(string? q, int page = 1, int limit = 8)
         {
             var query = _context.products.AsQueryable();
 
@@ -349,7 +349,7 @@ namespace api.Controllers
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / limit);
             var products = await query
-                .Include (c=>c.Comments)
+                .Include(c => c.Comments)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToListAsync();
@@ -374,7 +374,7 @@ namespace api.Controllers
                 total = totalItems,
                 products = result,
                 CurrentPage = page,
-                TotalPages=totalPages,
+                TotalPages = totalPages,
             });
         }
     }

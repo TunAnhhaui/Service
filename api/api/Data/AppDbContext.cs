@@ -26,7 +26,7 @@ namespace api.Data
         public DbSet<Comment> comments { get; set; }
         public DbSet<Order> orders { get; set; }
         public DbSet<OrderItem> ordersItem { get; set; }
-
+        public DbSet<Notification> notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CategoryType>()
@@ -112,6 +112,10 @@ namespace api.Data
             modelBuilder.Entity<Promotion>()
                 .Property(o => o.Status)
                 .HasDefaultValue(true)
+                .IsRequired();
+            modelBuilder.Entity<Notification>()
+                .Property(o => o.Status)
+                .HasDefaultValue(false)
                 .IsRequired();
         }
     }

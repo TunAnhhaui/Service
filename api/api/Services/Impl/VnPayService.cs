@@ -1,12 +1,12 @@
 ﻿using api.Models;
 
-namespace api.Services
+namespace api.Services.Impl
 {
     public class VnPayService : IVnPayService
     {
         private readonly IConfiguration _configuration;
 
-        public VnPayService( IConfiguration configuration)
+        public VnPayService(IConfiguration configuration)
         {
             _configuration = configuration;
         }

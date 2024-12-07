@@ -1,7 +1,8 @@
 ﻿using api.Data;
 using api.Models;
+using api.Repository.Irepository;
 
-namespace api.Repository.Irepository
+namespace api.Repository
 {
     public class UserPromotionRepository : IUserPromotionRepository
     {

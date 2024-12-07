@@ -1,8 +1,8 @@
 <template>
     <div class=" mt-2 relative">
         <div class="flex items-center gap-2 p-2">
-            <router-link :to="{name:'adminHome'}">Home:</router-link>
-            <VueIcon type="mdi" :path="mdiChevronRight"/>
+            <router-link :to="{ name: 'adminHome' }">Home:</router-link>
+            <VueIcon type="mdi" :path="mdiChevronRight" />
             <p class="text-sm">Khách hàng</p>
         </div>
         <div class="flex bg-white shadow-lg mt-1 p-4">
@@ -18,12 +18,15 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in data" :key="item.id" class="">
-                        <td scope="col" class="border text-center hover:text-blue-500 cursor-pointer">#{{ item.id }}</td>
+                        <td scope="col" class="border text-center hover:text-blue-500 cursor-pointer">#{{ item.id }}
+                        </td>
                         <td scope="col" class="border text-center">{{ item.username }}</td>
                         <td scope="col" class="border text-center">{{ item.phone }}</td>
                         <td scope="col" class="border text-center">{{ item.email }}</td>
                         <td class="flex gap-2 justify-center items-center border">
-                            <div class="text-red-500"><VueIcon type="mdi" :path="mdiCloseCircle"/></div>
+                            <div class="text-red-500">
+                                <VueIcon type="mdi" :path="mdiCloseCircle" />
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -38,28 +41,28 @@
     </div>
 </template>
 <script>
-import { mdiChevronRight,mdiCheckCircle, mdiCloseCircle } from '@mdi/js';
+import { mdiChevronRight, mdiCheckCircle, mdiCloseCircle } from '@mdi/js';
 import axios from 'axios';
 
 export default {
-    name:'OrderView',
-    props:['updateTotal'],
-    data(){
-        return{
-            data:[],
-            page:1,
-            limit:5,
-            mdiChevronRight,mdiCheckCircle,mdiCloseCircle,
+    name: 'OrderView',
+    props: ['updateTotal'],
+    data() {
+        return {
+            data: [],
+            page: 1,
+            limit: 10,
+            mdiChevronRight, mdiCheckCircle, mdiCloseCircle,
         }
     },
-    mounted(){
+    mounted() {
         this.getUser()
     },
-    methods:{
-        async getUser(){
+    methods: {
+        async getUser() {
             try {
-                const res=await axios.get(`/User/getByPage?page=${this.page}&limit=${this.limit}`)
-                this.data=res.data
+                const res = await axios.get(`/User/getByPage?page=${this.page}&limit=${this.limit}`)
+                this.data = res.data
             } catch (err) {
                 console.log(err)
             }

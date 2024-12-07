@@ -17,7 +17,7 @@ namespace api.Services.Impl
         public async Task<IEnumerable<object>> GetAllPromotionsAsync()
         {
             var promotions = await _repository.GetAllAsync();
-            return promotions.Select(promotion => new
+            var result = promotions.Select(promotion => new
             {
                 Name = promotion.Name,
                 DiscountRate = promotion.DiscountRate,
@@ -31,7 +31,9 @@ namespace api.Services.Impl
                     UserId = up.UserId,
                     UserEmail = up.PromotionId
                 }).ToList()
-            });
+
+            }).ToList();
+            return promotions;
         }
 
         public async Task CreatePromotionAsync(PromotionDto promotionDto)

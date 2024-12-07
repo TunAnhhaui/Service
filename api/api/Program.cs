@@ -42,8 +42,8 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 
-
-
+builder.Services.AddSignalR();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
@@ -88,6 +88,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapHub<NotificationHub>("/notificationHub");
+
 
 app.UseRouting();
 app.UseCors("AllowSpecificOrigin");

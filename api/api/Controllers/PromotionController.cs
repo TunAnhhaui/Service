@@ -1,8 +1,6 @@
-﻿using api.Data;
-using api.Dto;
-using api.Models;
+﻿using api.Dto;
+using api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -10,58 +8,31 @@ namespace api.Controllers
     [Route("[Controller]")]
     public class PromotionController : Controller
     {
-        private readonly AppDbContext _context;
-        public PromotionController(AppDbContext context)
+        private readonly IPromotionService _service;
+
+        public PromotionController(IPromotionService service)
         {
-            _context=context;
+            _service = service;
         }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] PromotionDto promotionDto)
         {
-            var newPromotion = new Promotion
-            {
-                Name = promotionDto.Name,
-                DiscountRate = promotionDto.DiscountRate,
-                Code = promotionDto.Code,
-                StartDate = promotionDto.StartDate,
-                EndDate=promotionDto.EndDate,
-            };
-
-            _context.promotion.Add(newPromotion);
-            await _context.SaveChangesAsync();
+            await _service.CreatePromotionAsync(promotionDto);
             return Ok("Thêm mới thành công");
         }
+
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
         {
-            var promotions = await _context.promotion
-                .Include(p=>p.UserPromotions)
-                .OrderByDescending(p => p.StartDate).ToListAsync();
-            var result = promotions.Select(promotion => new 
-            {
-                Name=promotion.Name,
-                DiscountRate=promotion.DiscountRate,
-                Code = promotion.Code,
-                Status = promotion.Status,
-                StartDate=promotion.StartDate,
-                EndDate=promotion.EndDate,
-                IsActive=promotion.IsActive,
-                UserPromotions = promotion.UserPromotions.Select(up => new 
-                {
-                    UserId = up.UserId,
-                    UserEmail = up.PromotionId
-                }).ToList()
-
-            }).ToList();
+            var promotions = await _service.GetAllPromotionsAsync();
             return Ok(promotions);
         }
+
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] bool status)
         {
-            var promotions = await _context.promotion.FindAsync(id);
-            promotions.Status= status;
-            await _context.SaveChangesAsync();
-
+            await _service.UpdatePromotionStatusAsync(id, status);
             return Ok();
         }
     }

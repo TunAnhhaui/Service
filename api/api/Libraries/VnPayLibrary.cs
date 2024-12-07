@@ -25,24 +25,19 @@ public class VnPayLibrary
             }
         }
 
-        var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
-        var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-        var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-        var vnpSecureHash =
-            collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; 
-        var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-
-        var checkSignature =
-            vnPay.ValidateSignature(vnpSecureHash, hashSecret); 
-
-        if (!checkSignature)
+        // Kiểm tra và bảo vệ chuyển đổi dữ liệu từ chuỗi sang Int64
+        long orderId = 0;
+        if (!long.TryParse(vnPay.GetResponseData("vnp_TxnRef"), out orderId))
+        {
             return new PaymentResponseModel()
             {
                 Success = false,
-                OrderId = (int)orderId,
+                OrderId = 0,  // Trả về giá trị mặc định nếu không thể chuyển đổi
             };
+        }
 
-        if (vnpResponseCode != "00") 
+        long vnPayTranId = 0;
+        if (!long.TryParse(vnPay.GetResponseData("vnp_TransactionNo"), out vnPayTranId))
         {
             return new PaymentResponseModel()
             {
@@ -50,6 +45,31 @@ public class VnPayLibrary
                 OrderId = (int)orderId,
             };
         }
+
+        var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+        var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value;
+        var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+
+        // Kiểm tra chữ ký (signature)
+        var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret);
+        if (!checkSignature)
+        {
+            return new PaymentResponseModel()
+            {
+                Success = false,
+                OrderId = (int)orderId,
+            };
+        }
+
+        if (vnpResponseCode != "00")
+        {
+            return new PaymentResponseModel()
+            {
+                Success = false,
+                OrderId = (int)orderId,
+            };
+        }
+
         return new PaymentResponseModel()
         {
             Success = true,
@@ -62,33 +82,30 @@ public class VnPayLibrary
             VnPayResponseCode = vnpResponseCode
         };
     }
+
     public string GetIpAddress(HttpContext context)
     {
-        var ipAddress = string.Empty;
         try
         {
             var remoteIpAddress = context.Connection.RemoteIpAddress;
-        
-            if (remoteIpAddress != null)
-            {
-                if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
-                {
-                    remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
-                        .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
-                }
-        
-                if (remoteIpAddress != null) ipAddress = remoteIpAddress.ToString();
-        
-                return ipAddress;
-            }
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
 
-        return "127.0.0.1";
+            if (remoteIpAddress == null)
+                return "127.0.0.1";
+
+            if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
+                    .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+            }
+
+            return remoteIpAddress?.ToString() ?? "127.0.0.1";
+        }
+        catch (Exception)
+        {
+            return "127.0.0.1";
+        }
     }
+
     public void AddRequestData(string key, string value)
     {
         if (!string.IsNullOrEmpty(value))
@@ -141,11 +158,13 @@ public class VnPayLibrary
         return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
     }
 
+
     private string HmacSha512(string key, string inputData)
     {
         var hash = new StringBuilder();
         var keyBytes = Encoding.UTF8.GetBytes(key);
         var inputBytes = Encoding.UTF8.GetBytes(inputData);
+
         using (var hmac = new HMACSHA512(keyBytes))
         {
             var hashValue = hmac.ComputeHash(inputBytes);
@@ -157,6 +176,7 @@ public class VnPayLibrary
 
         return hash.ToString();
     }
+
 
     private string GetResponseData()
     {
@@ -188,7 +208,7 @@ public class VnPayLibrary
 
 public class VnPayCompare : IComparer<string>
 {
-    public int Compare(string x, string y)
+    public int Compare(string? x, string? y)
     {
         if (x == y) return 0;
         if (x == null) return -1;

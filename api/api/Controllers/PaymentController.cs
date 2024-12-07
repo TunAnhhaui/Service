@@ -30,9 +30,10 @@ namespace api.Controllers
             var response = _vnPayService.PaymentExecute(Request.Query);
             if (!response.Success)
             {
-                return Redirect($"http://localhost:8080/checkout?orderId={response.OrderId}&&Status=payment-failure");
+                return Redirect($"http://localhost:8080/checkout?orderId={response.OrderId}&Status=payment-failure");
             }
-            return Redirect($"http://localhost:8080/checkout?orderId={response.OrderId}&&Status=payment-success");
+            return Redirect($"http://localhost:8080/checkout?orderId={response.OrderId}&Status=payment-success");
         }
+
     }
 }

@@ -1,10 +1,24 @@
 <template>
-    <div class=" mt-2 relative">
+    <div class="mt-2 relative">
         <div class="flex items-center gap-2 p-2">
-            <router-link :to="{name:'adminHome'}">Home:</router-link>
-            <VueIcon type="mdi" :path="mdiChevronRight"/>
+            <router-link :to="{ name: 'adminHome' }">Home:</router-link>
+            <VueIcon type="mdi" :path="mdiChevronRight" />
             <p class="text-sm">Đơn hàng</p>
         </div>
+
+        <div class="flex justify-between items-center mt-4">
+            <button @click="prevPage" :disabled="page <= 1"
+                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-400 disabled:bg-gray-400">
+                Trang trước
+            </button>
+
+            <button @click="nextPage" :disabled="this.data.length < 1"
+                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-400 disabled:bg-gray-400">
+                Trang tiếp theo
+            </button>
+        </div>
+
+        <!-- Bảng đơn hàng -->
         <div class="bg-white shadow-lg mt-1">
             <table class="w-full text-xs">
                 <thead class="border">
@@ -19,14 +33,21 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in data" :key="item.orderId" class="">
-                        <td scope="col" @click="toggleDetails(item.orderId)" class="border text-center hover:text-blue-500 cursor-pointer">#{{ item.orderId }}</td>
+                        <td scope="col" @click="toggleDetails(item.orderId)"
+                            class="border text-center hover:text-blue-500 cursor-pointer">#{{ item.orderId }}</td>
                         <td scope="col" class="border text-center">{{ formatDate(item.createDate) }}</td>
                         <td scope="col" class="border text-center">{{ item.totalAmount | numeral }} đ</td>
                         <td scope="col" class="border text-center">{{ item.paymentStatus }}</td>
                         <td scope="col" class="border text-center">{{ item.shippingStatus }}</td>
                         <td class="flex gap-2 justify-center items-center border">
-                            <div @click="Update(item.orderId,item.paymentStatus,item.shippingStatus)" :class="item.shippingStatus==='Đã giao' ? 'text-blue-500':'text-red-500'" class=" cursor-pointer"><VueIcon type="mdi" :path="mdiCheckCircle"/></div>
-                            <div class="text-red-500"><VueIcon type="mdi" :path="mdiCloseCircle"/></div>
+                            <div @click="Update(item.orderId, item.paymentStatus, item.shippingStatus)"
+                                :class="item.shippingStatus === 'Đã giao' ? 'text-blue-500' : 'text-red-500'"
+                                class="cursor-pointer">
+                                <VueIcon type="mdi" :path="mdiCheckCircle" />
+                            </div>
+                            <div class="text-red-500">
+                                <VueIcon type="mdi" :path="mdiCloseCircle" />
+                            </div>
                         </td>
                     </tr>
                     <tr v-if="selectedOrderId === orderDetail.orderId">
@@ -40,40 +61,45 @@
                                 <!-- Thêm thông tin chi tiết khác -->
                             </div>
                         </td>
-                    </tr>  
+                    </tr>
                 </tbody>
             </table>
         </div>
-        <!-- <div class="absolute bottom-0 right-0">
-            <div class="flex gap-2">
-                <font-awesome-icon icon="arrow-left" v-if="page>1" @click="prevPage" class="p-2 bg-blue-400 hover:cursor-pointer"/>
-                <font-awesome-icon icon="arrow-right" @click="nextPage" class="p-2 bg-blue-400 hover:cursor-pointer"/>
-            </div>
-        </div> -->
+
+        <!-- Nếu muốn giữ nút phân trang ở dưới cùng, bỏ phần dưới này -->
+        <!-- <div class="absolute bottom-0 right-0"> -->
+        <!--     <div class="flex gap-2"> -->
+        <!--         <font-awesome-icon icon="arrow-left" v-if="page > 1" @click="prevPage" -->
+        <!--             class="p-2 bg-blue-400 hover:cursor-pointer" /> -->
+        <!--         <font-awesome-icon icon="arrow-right" @click="nextPage" class="p-2 bg-blue-400 hover:cursor-pointer" /> -->
+        <!--     </div> -->
+        <!-- </div> -->
+
     </div>
 </template>
+
 <script>
-import { mdiChevronRight,mdiCheckCircle, mdiCloseCircle } from '@mdi/js';
+import { mdiChevronRight, mdiCheckCircle, mdiCloseCircle } from '@mdi/js';
 import axios from 'axios';
 import moment from 'moment';
 
 export default {
-    name:'OrderView',
-    props:['updateTotal'],
-    data(){
-        return{
-            data:[],
-            page:1,
-            limit:20,
-            mdiChevronRight,mdiCheckCircle,mdiCloseCircle,
-            selectedOrderId:null,
-            orderDetail:""
+    name: 'OrderView',
+    props: ['updateTotal'],
+    data() {
+        return {
+            data: [],
+            page: 1,
+            limit: 20,
+            mdiChevronRight, mdiCheckCircle, mdiCloseCircle,
+            selectedOrderId: null,
+            orderDetail: ""
         }
     },
-    mounted(){
+    mounted() {
         this.getOrder()
     },
-    methods:{
+    methods: {
         formatDate(date) {
             return moment(date).format('YYYY-MM-DD');
         },
@@ -81,46 +107,59 @@ export default {
             this.selectedOrderId = this.selectedOrderId === orderId ? null : orderId;
             this.getOrderDetail()
         },
-        async getOrder(){
+        async getOrder() {
             try {
-                const res=await axios.get(`/Order/GetAll?page=${this.page}&limit=${this.limit}`)
-                this.data=res.data
+                const res = await axios.get(`/Order/GetAll?page=${this.page}&limit=${this.limit}`)
+                this.data = res.data
             } catch (err) {
                 console.log(err)
             }
         },
-        async getOrderDetail(){
+        async getOrderDetail() {
             try {
-                const res=await axios.get(`/Order/GetById/${this.selectedOrderId}`)
-                this.orderDetail=res.data
+                const res = await axios.get(`/Order/GetById/${this.selectedOrderId}`)
+                this.orderDetail = res.data
             } catch (err) {
                 console.log(err)
             }
         },
-        async Update(id,paymentStatus,shippingStatus){
+        async Update(id, paymentStatus, shippingStatus) {
             try {
                 let newStatusPayment;
                 let newStatusShipping;
-                if(paymentStatus==="Chưa thanh toán"){
-                    newStatusPayment="Đã thanh toán"
-                }else{
-                    newStatusPayment="Đã thanh toán"
+                if (paymentStatus === "Chưa thanh toán") {
+                    newStatusPayment = "Đã thanh toán"
+                } else {
+                    newStatusPayment = "Đã thanh toán"
                 }
-                if(shippingStatus==="Chưa chuyển"){
-                    newStatusShipping="Đã giao"
-                }else{
-                    newStatusShipping="Đã giao"
+                if (shippingStatus === "Chưa chuyển") {
+                    newStatusShipping = "Đã giao"
+                } else {
+                    newStatusShipping = "Đã giao"
                 }
-                await axios.patch(`/Order/update/${id}`,{
-                    paymentStatus:newStatusPayment,
-                    shippingStatus:newStatusShipping
+                await axios.patch(`/Order/update/${id}`, {
+                    paymentStatus: newStatusPayment,
+                    shippingStatus: newStatusShipping
 
                 })
                 this.getOrder()
             } catch (err) {
                 console.log(err)
             }
+        },
+        async prevPage() {
+            if (this.page > 1) {
+                this.page--;
+                this.getOrder();  // Lấy dữ liệu của trang trước
+            }
+        },
+        async nextPage() {
+            if (this.data.length > 1) {
+                this.page++;  // Tăng page lên 1 khi bấm "next"
+                this.getOrder();  // Lấy dữ liệu của trang tiếp theo
+            }
         }
     },
+
 }
 </script>
