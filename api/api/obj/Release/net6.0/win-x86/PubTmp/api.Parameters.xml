@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="datnguyen37-001-site1" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\Workspace\\vuejs\\noithat\\api\\api\\obj\\Release\\net6\.0\\win-x86\\PubTmp\\Out\\$" />
+  </parameter>
+  <parameter name="api.Data.AppDbContext" description="" value="Data Source=SQL5112.site4now.net;Initial Catalog=db_aae4a9_login;User Id=db_aae4a9_login_admin;Password=Datnguyen12@" tags="dbfullsql">
+    <parameterEntry kind="ProviderPath" scope="dbfullsql" match="^D:\\Workspace\\vuejs\\noithat\\api\\api\\obj\\Release\\net6\.0\\win-x86\\PubTmp\\EFSQLScripts\\api\.Data\.AppDbContext\.sql$" />
+  </parameter>
+</parameters>

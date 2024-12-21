@@ -1,0 +1,62 @@
+{
+    "common": {
+      "select_lang": "Ngôn ngữ"
+    },
+      "login": {
+        "header": "Login to your account",
+        "description": "Enter your email and password:",
+        "buttons": {
+          "submit": "Login"
+        },
+        "inputs": {
+          "email_placeholder": "Enter email or phone number",
+          "password_placeholder": "Password"
+        },
+        "account_actions": {
+          "new_user_prompt": "New customer?",
+          "create_account": "Create account"
+        },
+        "forgot_password": {
+          "prompt": "Forgot password?",
+          "reset_action": "Restore password"
+        }
+      },
+      "recover": {
+        "header": "Password Recovery",
+        "email_option": "Recover via email",
+        "phone_option": "Recover via phone number",
+        "inputs": {
+          "email_placeholder": "Email",
+          "phone_placeholder": "Enter phone number"
+        },
+        "buttons": {
+          "recover": "Recover",
+          "send_code": "Send verification code"
+        },
+        "return_to_login": "Remembered your password?",
+        "back_to_login": "Back to login"
+      },
+  "register": {
+    "header": "Register Account",
+    "buttons": {
+      "submit": "Register"
+    },
+    "inputs": {
+      "email_placeholder": "Enter your registration email"
+    },
+    "return_to_login": "Already have an account?",
+    "back_to_login": "Return to login"
+},
+  "acount":{
+    "header":"My acount"
+  },
+  "cart":{
+    "header":"Cart",
+    "description":"There are currently no products",
+    "total_Amount":"Total",
+    "buttons":{
+      "show_cart":"View cart",
+      "payment":"Payment"
+    }
+  }
+}   
