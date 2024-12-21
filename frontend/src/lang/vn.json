@@ -1,0 +1,65 @@
+{
+  "common": {
+    "select_lang": "Ngôn ngữ"
+  },
+  "login": {
+    "header": "Đăng nhập tài khoản",
+    "description": "Nhập email và mật khẩu của bạn:",
+    "buttons": {
+      "submit": "Đăng nhập"
+    },
+    "inputs": {
+      "email_placeholder": "Nhập email hoặc số điện thoại",
+      "password_placeholder": "Mật khẩu"
+    },
+    "account_actions": {
+      "new_user_prompt": "Khách hàng mới?",
+      "create_account": "Tạo tài khoản"
+    },
+    "forgot_password": {
+      "prompt": "Quên mật khẩu?",
+      "reset_action": "Khôi phục mật khẩu"
+    }
+  },
+    "recover": {
+      "header": "Khôi phục mật khẩu",
+      "email_option": "Khôi phục bằng email",
+      "phone_option": "Khôi phục bằng số điện thoại",
+      "inputs": {
+        "email_placeholder": "Email",
+        "phone_placeholder": "Nhập số điện thoại"
+      },
+      "recaptcha_notice": "Website được bảo vệ bởi reCAPTCHA và",
+      "privacy_policy": "Chính sách bảo mật",
+      "terms_of_service": "Điều khoản dịch vụ",
+      "buttons": {
+        "recover": "Khôi phục",
+        "send_code": "Gửi mã xác nhận"
+      },
+      "return_to_login": "Bạn đã nhớ mật khẩu?",
+      "back_to_login": "Trở về đăng nhập"
+    },
+  "register": {
+    "header": "Đăng kí tài khoản",
+    "buttons": {
+      "submit": "Đăng ký"
+    },
+    "inputs": {
+      "email_placeholder": "Nhập email dăng kí"
+    },
+    "return_to_login": "Bạn đã có tài khoản?",
+    "back_to_login": "Trở về đăng nhập"
+  } ,
+  "acount":{
+    "header":"Tài khoản của tôi"
+  },
+  "cart":{
+    "header":"Giỏ hàng",
+    "description":"Hiện chưa có sản phẩm",
+    "total_Amount":"Tổng tiền",
+    "buttons":{
+      "show_cart":"Xem giỏ hàng",
+      "payment":"Thanh toán"
+    }
+  }
+}

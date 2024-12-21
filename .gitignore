@@ -1,7 +1,7 @@
 .vs/
-# Ignore temporary and sensitive files
-api/obj/
-api/*.json
-# Ignore sensitive and temporary files
-api/api/obj/
-*.json
+# # Ignore temporary and sensitive files
+# api/obj/
+# api/*.json
+# # Ignore sensitive and temporary files
+# api/api/obj/
+# *.json
